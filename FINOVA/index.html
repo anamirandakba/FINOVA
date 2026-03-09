@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FINOVA — Plataforma Financiera</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav class="navbar navbar-expand-lg fnv-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand fnv-brand" href="#">
+        <span class="brand-mark">FN</span>
+        <span class="brand-name">FINOVA</span>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <i class="bi bi-list text-white fs-3"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto gap-1 align-items-lg-center">
+          <li class="nav-item"><button class="fnv-navlink active" data-section="dashboard"><i class="bi bi-grid-1x2"></i>Dashboard</button></li>
+          <li class="nav-item"><button class="fnv-navlink" data-section="ingresos"><i class="bi bi-arrow-down-circle"></i>Ingresos</button></li>
+          <li class="nav-item"><button class="fnv-navlink" data-section="gastos"><i class="bi bi-arrow-up-circle"></i>Gastos</button></li>
+          <li class="nav-item"><button class="fnv-navlink" data-section="ahorro"><i class="bi bi-piggy-bank"></i>Ahorro</button></li>
+          <li class="nav-item"><button class="fnv-navlink fnv-navlink--inv" data-section="inversiones"><i class="bi bi-graph-up-arrow"></i>Inversiones</button></li>
+          <li class="nav-item"><button class="fnv-navlink" data-section="reporte"><i class="bi bi-bar-chart-line"></i>Análisis</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="fnv-main">
+    <div class="container-xl py-4 py-lg-5">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <section id="dashboard" class="fnv-section active">
+        <div class="fnv-page-header mb-4">
+          <div>
+            <h1 class="fnv-page-title">Dashboard</h1>
+            <p class="fnv-page-sub">Resumen de tu situación financiera actual</p>
+          </div>
+          <div class="fnv-date-chip"><i class="bi bi-calendar3"></i><span id="header-date"></span></div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-lg-3">
+            <div class="fnv-kpi">
+              <div class="kpi-icon kpi-icon--green"><i class="bi bi-arrow-down-circle-fill"></i></div>
+              <span class="kpi-lbl">Ingresos</span>
+              <span class="kpi-val" id="total-ingresos">$0.00</span>
+              <span class="kpi-sub">Total registrado</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="fnv-kpi">
+              <div class="kpi-icon kpi-icon--red"><i class="bi bi-arrow-up-circle-fill"></i></div>
+              <span class="kpi-lbl">Gastos</span>
+              <span class="kpi-val" id="total-gastos">$0.00</span>
+              <span class="kpi-sub">Total registrado</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="fnv-kpi">
+              <div class="kpi-icon kpi-icon--blue"><i class="bi bi-wallet2"></i></div>
+              <span class="kpi-lbl">Balance</span>
+              <span class="kpi-val" id="balance">$0.00</span>
+              <span class="kpi-sub">Ingresos - Gastos</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="fnv-kpi fnv-kpi--featured">
+              <div class="kpi-icon kpi-icon--teal"><i class="bi bi-safe2-fill"></i></div>
+              <span class="kpi-lbl">Fondo de Ahorro</span>
+              <span class="kpi-val" id="ahorro-sugerido">$0.00</span>
+              <span class="kpi-sub">20% del balance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-lg-7">
+            <div class="fnv-card h-100">
+              <div class="fnv-card-hdr"><i class="bi bi-bar-chart-fill"></i>Distribución Financiera</div>
+              <div class="fnv-card-body"><canvas id="financeChart" style="max-height:260px"></canvas></div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="fnv-card h-100">
+              <div class="fnv-card-hdr"><i class="bi bi-pie-chart-fill"></i>Gastos por Categoría</div>
+              <div class="fnv-card-body"><canvas id="categoryChart" style="max-height:260px"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="fnv-card">
+              <div class="fnv-card-hdr"><i class="bi bi-clock-history"></i>Últimos Ingresos</div>
+              <div class="p-0">
+                <table class="table fnv-table mb-0">
+                  <thead><tr><th>Concepto</th><th>Monto</th><th>Fecha</th></tr></thead>
+                  <tbody id="tbody-recent-income"><tr><td colspan="3" class="fnv-empty">Sin registros</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="fnv-card">
+              <div class="fnv-card-hdr"><i class="bi bi-clock-history"></i>Últimos Gastos</div>
+              <div class="p-0">
+                <table class="table fnv-table mb-0">
+                  <thead><tr><th>Concepto</th><th>Categoría</th><th>Monto</th></tr></thead>
+                  <tbody id="tbody-recent-expense"><tr><td colspan="3" class="fnv-empty">Sin registros</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ INGRESOS ═══ -->
+      <section id="ingresos" class="fnv-section">
+        <div class="fnv-page-header mb-4">
+          <div><h1 class="fnv-page-title">Ingresos</h1><p class="fnv-page-sub">Registra y gestiona tus fuentes de ingreso</p></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="fnv-card fnv-sticky-form">
+              <div class="fnv-card-hdr"><i class="bi bi-plus-circle"></i>Nuevo Ingreso</div>
+              <div class="fnv-card-body">
+                <div class="mb-3"><label class="fnv-lbl">Concepto</label><input type="text" id="income-concept" class="form-control fnv-input" placeholder="Ej: Sueldo mensual"/></div>
+                <div class="mb-3"><label class="fnv-lbl">Monto</label><div class="input-group"><span class="input-group-text fnv-igt">$</span><input type="number" id="income-amount" class="form-control fnv-input" placeholder="0.00" min="0" step="0.01"/></div></div>
+                <div class="mb-4"><label class="fnv-lbl">Fecha</label><input type="date" id="income-date" class="form-control fnv-input"/></div>
+                <button class="btn fnv-btn-primary w-100" id="btn-add-income"><i class="bi bi-plus-lg me-2"></i>Agregar Ingreso</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="fnv-card">
+              <div class="fnv-card-hdr"><i class="bi bi-list-ul"></i>Historial de Ingresos</div>
+              <div class="table-responsive">
+                <table class="table fnv-table mb-0">
+                  <thead><tr><th>Concepto</th><th>Monto</th><th>Fecha</th><th></th></tr></thead>
+                  <tbody id="tbody-income"><tr><td colspan="4" class="fnv-empty">Sin registros</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ GASTOS ═══ -->
+      <section id="gastos" class="fnv-section">
+        <div class="fnv-page-header mb-4">
+          <div><h1 class="fnv-page-title">Gastos</h1><p class="fnv-page-sub">Controla en qué estás gastando tu dinero</p></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="fnv-card fnv-sticky-form">
+              <div class="fnv-card-hdr"><i class="bi bi-plus-circle"></i>Nuevo Gasto</div>
+              <div class="fnv-card-body">
+                <div class="mb-3"><label class="fnv-lbl">Concepto</label><input type="text" id="expense-concept" class="form-control fnv-input" placeholder="Ej: Supermercado"/></div>
+                <div class="mb-3"><label class="fnv-lbl">Monto</label><div class="input-group"><span class="input-group-text fnv-igt">$</span><input type="number" id="expense-amount" class="form-control fnv-input" placeholder="0.00" min="0" step="0.01"/></div></div>
+                <div class="mb-3">
+                  <label class="fnv-lbl">Categoría</label>
+                  <select id="expense-category" class="form-select fnv-input">
+                    <option value="">— Selecciona —</option>
+                    <option value="comida">Alimentación</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="entretenimiento">Entretenimiento</option>
+                    <option value="compras_online">Compras en línea</option>
+                    <option value="otros">Otros</option>
+                  </select>
+                </div>
+                <div class="mb-3"><label class="fnv-lbl">Fecha</label><input type="date" id="expense-date" class="form-control fnv-input"/></div>
+                <div class="fnv-classify-preview" id="classification-preview" style="display:none"></div>
+                <button class="btn fnv-btn-primary w-100" id="btn-add-expense"><i class="bi bi-plus-lg me-2"></i>Agregar Gasto</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="fnv-card">
+              <div class="fnv-card-hdr d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <span><i class="bi bi-list-ul me-2"></i>Historial de Gastos</span>
+                <div class="d-flex gap-3">
+                  <span class="fnv-ldot fnv-ldot--green">Necesario</span>
+                  <span class="fnv-ldot fnv-ldot--red">Innecesario</span>
+                  <span class="fnv-ldot fnv-ldot--gray">Otro</span>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table fnv-table mb-0">
+                  <thead><tr><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Fecha</th><th>Tipo</th><th></th></tr></thead>
+                  <tbody id="tbody-expense"><tr><td colspan="6" class="fnv-empty">Sin registros</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ AHORRO ═══ -->
+      <section id="ahorro" class="fnv-section">
+        <div class="fnv-page-header mb-4">
+          <div><h1 class="fnv-page-title">Fondo de Ahorro</h1><p class="fnv-page-sub">Proyección y análisis de tu capacidad de ahorro</p></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="fnv-card text-center h-100 d-flex align-items-center justify-content-center">
+              <div class="fnv-card-body py-4">
+                <div class="sv-ring-wrap">
+                  <svg viewBox="0 0 120 120" class="sv-ring-svg">
+                    <circle cx="60" cy="60" r="50" class="svr-track"/>
+                    <circle cx="60" cy="60" r="50" class="svr-fill" id="savings-ring-circle" stroke-dasharray="314" stroke-dashoffset="314"/>
+                  </svg>
+                  <div class="sv-ring-inner">
+                    <span class="svri-lbl">Ahorro</span>
+                    <span class="svri-val" id="savings-display">$0.00</span>
+                    <span class="svri-sub">20% del balance</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="fnv-card h-100">
+              <div class="fnv-card-hdr"><i class="bi bi-table"></i>Desglose Financiero</div>
+              <div class="fnv-card-body">
+                <div class="fnv-bdr"><span><i class="bi bi-arrow-down-circle text-success me-2"></i>Ingresos Totales</span><strong id="sb-income">$0.00</strong></div>
+                <div class="fnv-bdr"><span><i class="bi bi-check-circle me-2" style="color:var(--c-teal)"></i>Gastos Necesarios</span><strong id="sb-necessary" style="color:var(--c-teal)">$0.00</strong></div>
+                <div class="fnv-bdr"><span><i class="bi bi-x-circle text-danger me-2"></i>Gastos Innecesarios</span><strong id="sb-unnecessary" class="text-danger">$0.00</strong></div>
+                <div class="fnv-bdr"><span><i class="bi bi-dash-circle text-secondary me-2"></i>Otros Gastos</span><strong id="sb-others" class="text-secondary">$0.00</strong></div>
+                <div class="fnv-bdr fnv-bdr--total"><span><i class="bi bi-wallet2 me-2" style="color:var(--c-blue)"></i>Balance Neto</span><strong id="sb-balance" style="color:var(--c-blue)">$0.00</strong></div>
+                <div class="fnv-bdr fnv-bdr--saving"><span><i class="bi bi-safe2 me-2" style="color:var(--c-green)"></i>Ahorro Recomendado (20%)</span><strong id="sb-saving" style="color:var(--c-green)">$0.00</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="fnv-card fnv-rule-card">
+              <div class="fnv-card-body">
+                <div class="row align-items-center g-4">
+                  <div class="col-md-4">
+                    <h6 class="fw-600 mb-1" style="color:var(--c-blue-dark)">Regla 50 / 30 / 20</h6>
+                    <p class="text-sm text-secondary mb-0">Distribuye tus ingresos de forma estructurada para mantener control financiero a largo plazo.</p>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between mb-1"><span class="text-sm fw-500">Necesidades</span><span class="text-sm text-secondary">50%</span></div>
+                      <div class="progress fnv-prog"><div class="progress-bar" style="width:50%;background:var(--c-teal)"></div></div>
+                    </div>
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between mb-1"><span class="text-sm fw-500">Deseos</span><span class="text-sm text-secondary">30%</span></div>
+                      <div class="progress fnv-prog"><div class="progress-bar" style="width:30%;background:var(--c-blue)"></div></div>
+                    </div>
+                    <div>
+                      <div class="d-flex justify-content-between mb-1"><span class="text-sm fw-500">Ahorro</span><span class="text-sm text-secondary">20%</span></div>
+                      <div class="progress fnv-prog"><div class="progress-bar" style="width:20%;background:var(--c-green)"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ INVERSIONES ═══ -->
+      <section id="inversiones" class="fnv-section">
+        <div class="fnv-page-header mb-4">
+          <div><h1 class="fnv-page-title">Inversiones</h1><p class="fnv-page-sub">Sugerencias educativas y crecimiento de capital</p></div>
+        </div>
+
+        <div class="fnv-disclaimer mb-4">
+          <i class="bi bi-shield-exclamation me-2"></i>
+          Las siguientes son solo sugerencias mostradas</strong> y no representan asesoría financiera. Consulta a un experto certificado antes de tomar decisiones de inversión.
+        </div>
+
+        <!-- Capital banner -->
+        <div class="fnv-capital-banner mb-4">
+          <div class="row align-items-center g-3">
+            <div class="col-md-8">
+              <p class="cap-lbl mb-1">Capital disponible para invertir</p>
+              <p class="cap-amt mb-1" id="inv-capital">$0.00</p>
+              <p class="cap-note mb-0">Derivado de tu fondo de ahorro actual — 20% del balance neto</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+              <div class="fnv-ring-wrap d-inline-block position-relative">
+                <svg viewBox="0 0 120 120" class="fnv-ring-svg">
+                  <circle cx="60" cy="60" r="50" class="ring-track"/>
+                  <circle cx="60" cy="60" r="50" class="ring-fill" id="ring-fill-circle" stroke-dasharray="314" stroke-dashoffset="314"/>
+                </svg>
+                <div class="ring-lbl">
+                  <span id="ring-pct">0%</span>
+                  <small>del ingreso</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="fnv-card mb-4">
+          <div class="fnv-card-hdr"><i class="bi bi-lightbulb"></i>Sugerencias Automáticas</div>
+          <div class="fnv-card-body" id="inv-suggestions">
+            <p class="text-secondary text-sm mb-0">Registra ingresos y gastos para recibir sugerencias personalizadas.</p>
+          </div>
+        </div>
+
+        <!-- Edu cards -->
+        <p class="fnv-divider-label mb-3"><i class="bi bi-book me-2"></i>Instrumentos de Inversión</p>
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-xl-3"><div class="fnv-edu fnv-edu--red">
+            <i class="bi bi-graph-up-arrow fnv-edu-ico"></i>
+            <span class="edu-risk edu-risk--high">Riesgo alto</span>
+            <h6 class="edu-ttl">Acciones</h6>
+            <p class="edu-desc">Adquirir una fracción de una empresa. El valor depende del desempeño de la empresa en el mercado.</p>
+            <div class="edu-rate"><i class="bi bi-percent me-1"></i>Rendimiento histórico: <strong>~10% anual</strong></div>
+          </div></div>
+          <div class="col-sm-6 col-xl-3"><div class="fnv-edu fnv-edu--blue">
+            <i class="bi bi-building fnv-edu-ico"></i>
+            <span class="edu-risk edu-risk--mid">Riesgo moderado</span>
+            <h6 class="edu-ttl">Fondos de Inversión</h6>
+            <p class="edu-desc">Capital colectivo invertido en activos diversificados. Reduce el riesgo individual de forma automática.</p>
+            <div class="edu-rate"><i class="bi bi-percent me-1"></i>Rendimiento estimado: <strong>~7% anual</strong></div>
+          </div></div>
+          <div class="col-sm-6 col-xl-3"><div class="fnv-edu fnv-edu--green">
+            <i class="bi bi-bank fnv-edu-ico"></i>
+            <span class="edu-risk edu-risk--low">Riesgo bajo</span>
+            <h6 class="edu-ttl">CETES</h6>
+            <p class="edu-desc">Instrumentos de deuda del gobierno mexicano. Considerados seguros y accesibles para nuevos inversionistas.</p>
+            <div class="edu-rate"><i class="bi bi-percent me-1"></i>Rendimiento estimado: <strong>~10% anual</strong></div>
+          </div></div>
+          <div class="col-sm-6 col-xl-3"><div class="fnv-edu fnv-edu--teal">
+            <i class="bi bi-lock fnv-edu-ico"></i>
+            <span class="edu-risk edu-risk--low">Riesgo muy bajo</span>
+            <h6 class="edu-ttl">Ahorro a Largo Plazo</h6>
+            <p class="edu-desc">Cuenta de plazo fijo o AFORE. Predecible y seguro, ideal para metas financieras a futuro.</p>
+            <div class="edu-rate"><i class="bi bi-percent me-1"></i>Rendimiento estimado: <strong>~4% anual</strong></div>
+          </div></div>
+        </div>
+
+        <!-- Simulator -->
+        <p class="fnv-divider-label mb-3"><i class="bi bi-calculator me-2"></i>Proyección</p>
+        <div class="row g-4 mb-4">
+          <div class="col-lg-4">
+            <div class="fnv-card fnv-sticky-form">
+              <div class="fnv-card-hdr">Parámetros</div>
+              <div class="fnv-card-body">
+                <div class="mb-3"><label class="fnv-lbl">Tipo de inversión</label>
+                  <select id="sim-type" class="form-select fnv-input">
+                    <option value="acciones">Acciones (~10% anual)</option>
+                    <option value="fondos">Fondos de inversión (~7% anual)</option>
+                    <option value="cetes">CETES (~10% anual)</option>
+                    <option value="ahorro_largo">Ahorro a largo plazo (~4% anual)</option>
+                  </select>
+                </div>
+                <div class="mb-3"><label class="fnv-lbl">Cantidad a invertir</label>
+                  <div class="input-group"><span class="input-group-text fnv-igt">$</span><input type="number" id="sim-amount" class="form-control fnv-input" placeholder="5,000" min="1" step="0.01"/></div>
+                  <small class="text-secondary mt-1 d-block" id="sim-hint"></small>
+                </div>
+                <div class="mb-3"><label class="fnv-lbl">Plazo: <strong id="sim-years-label" style="color:var(--c-green)">5 años</strong></label>
+                  <input type="range" id="sim-years" class="form-range" min="1" max="30" value="5"/>
+                </div>
+                <div class="mb-4"><label class="fnv-lbl">Frecuencia de aportación</label>
+                  <select id="sim-freq" class="form-select fnv-input">
+                    <option value="once">Una sola vez</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="yearly">Anual</option>
+                  </select>
+                </div>
+                <button class="btn fnv-btn-accent w-100" id="btn-simulate"><i class="bi bi-play-fill me-2"></i>Calcular Proyección</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div id="sim-placeholder" class="fnv-card">
+              <div class="fnv-card-body text-center py-5">
+                <i class="bi bi-graph-up" style="font-size:2.8rem;color:var(--c-border)"></i>
+                <p class="text-secondary mt-3 mb-0">Configura los parámetros y presiona<br><strong>Calcular Proyección</strong></p>
+              </div>
+            </div>
+            <div id="sim-result" class="fnv-card" style="display:none">
+              <div class="fnv-card-hdr d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span><i class="bi bi-activity me-2"></i>Resultado</span>
+                <span class="fnv-badge-inv" id="result-type-badge">—</span>
+              </div>
+              <div class="fnv-card-body">
+                <div class="row g-3 mb-4 text-center">
+                  <div class="col-4"><div class="fnv-res-box"><span class="res-lbl">Invertido</span><span class="res-val" id="res-initial">$0</span></div></div>
+                  <div class="col-4"><div class="fnv-res-box fnv-res-box--hl"><span class="res-lbl">Valor estimado</span><span class="res-val" id="res-final">$0</span></div></div>
+                  <div class="col-4"><div class="fnv-res-box"><span class="res-lbl">Ganancia</span><span class="res-val text-success" id="res-gain">$0</span><span class="res-pct" id="res-gain-pct"></span></div></div>
+                </div>
+                <div id="res-breakdown" class="mb-3"></div>
+                <div style="height:200px"><canvas id="simChart"></canvas></div>
+                <button class="btn fnv-btn-secondary w-100 mt-3" id="btn-save-sim"><i class="bi bi-floppy me-2"></i>Guardar Simulación</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sim history -->
+        <p class="fnv-divider-label mb-3"><i class="bi bi-clock-history me-2"></i>Historial de Simulaciones</p>
+        <div class="fnv-card">
+          <div class="table-responsive">
+            <table class="table fnv-table mb-0">
+              <thead><tr><th>Instrumento</th><th>Monto</th><th>Plazo</th><th>Valor Est.</th><th>Ganancia</th><th>Fecha</th><th></th></tr></thead>
+              <tbody id="tbody-simulations"><tr><td colspan="7" class="fnv-empty">Sin simulaciones guardadas</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ ANÁLISIS ═══ -->
+      <section id="reporte" class="fnv-section">
+        <div class="fnv-page-header mb-4">
+          <div><h1 class="fnv-page-title">Análisis Mensual</h1><p class="fnv-page-sub">Evaluación inteligente de tus hábitos financieros</p></div>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="fnv-card text-center">
+              <div class="fnv-card-body py-5">
+                <div class="fnv-ai-icon-wrap mx-auto mb-3"><i class="bi bi-cpu"></i></div>
+                <h5 class="fw-600 mb-2">Asistente Financiero</h5>
+                <p class="text-secondary text-sm mb-4">FINOVA analiza tus ingresos, gastos y hábitos para generar recomendaciones personalizadas.</p>
+                <button class="btn fnv-btn-primary w-100" id="btn-generate-report"><i class="bi bi-play-circle me-2"></i>Generar Análisis</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div id="report-placeholder" class="fnv-card">
+              <div class="fnv-card-body text-center py-5">
+                <i class="bi bi-bar-chart-line" style="font-size:2.8rem;color:var(--c-border)"></i>
+                <p class="text-secondary mt-3 mb-0">Presiona <strong>Generar Análisis</strong> para ver tu reporte</p>
+              </div>
+            </div>
+            <div id="report-results" class="fnv-card" style="display:none">
+              <div class="fnv-card-hdr d-flex justify-content-between flex-wrap gap-2">
+                <span><i class="bi bi-file-earmark-text me-2"></i>Reporte de Resultados</span>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fnv-badge-report">Análisis IA</span>
+                  <span class="text-secondary text-sm" id="report-date"></span>
+                </div>
+              </div>
+              <div class="fnv-card-body">
+                <div id="report-items" class="d-flex flex-column gap-2 mb-4"></div>
+                <div class="fnv-score-row">
+                  <span class="score-lbl">Puntuación financiera</span>
+                  <div class="progress fnv-prog flex-grow-1 mx-3">
+                    <div class="progress-bar fnv-score-bar" id="score-bar" style="width:0%"></div>
+                  </div>
+                  <strong id="score-value" style="color:var(--c-green);white-space:nowrap">0 / 100</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="fnv-footer">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span class="fnv-footer-brand">FINOVA</span>
+      <span class="text-sm" style="color:rgba(255,255,255,.5)">Control financiero inteligente &copy; 2025</span>
+      <span class="text-sm" style="color:rgba(255,255,255,.35)">Simulaciones educativas — No constituye asesoría financiera</span>
+    </div>
+  </footer>
+
+  <div class="fnv-toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
