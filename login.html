@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FINOVA — Iniciar Sesión</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="auth.css"/>
+</head>
+<body class="auth-body">
+
+  <div class="auth-split">
+
+    <!-- Panel izquierdo -->
+    <div class="auth-panel-left d-none d-lg-flex">
+      <div class="panel-left-inner">
+        <div class="panel-brand">
+          <span class="brand-mark">FNV</span>
+          <span class="brand-name">FINOVA</span>
+        </div>
+        <h2 class="panel-headline">Control financiero<br>a tu alcance.</h2>
+        <p class="panel-sub">Gestiona ingresos, gastos y Explorador de Inversiones. Tus datos, seguros en la nube.</p>
+        <div class="panel-stats">
+          <div class="pstat"><span class="pstat-val">50/30/20</span><span class="pstat-lbl">Regla de ahorro</span></div>
+          <div class="pstat"><span class="pstat-val">4</span><span class="pstat-lbl">Tipos de inversión</span></div>
+          <div class="pstat"><span class="pstat-val">100%</span><span class="pstat-lbl">En la nube</span></div>
+        </div>
+      </div>
+      <div class="panel-grid-overlay"></div>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="auth-panel-right">
+      <div class="auth-form-wrap">
+
+        <div class="auth-mobile-brand d-flex d-lg-none">
+          <span class="brand-mark brand-mark--sm">FNV</span>
+          <span class="brand-name brand-name--dark">FINOVA</span>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <h1 class="auth-title">Bienvenido de vuelta</h1>
+            <p class="auth-subtitle">Ingresa tus credenciales para continuar</p>
+          </div>
+
+          <div class="auth-alert auth-alert--error" id="login-error" style="display:none">
+            <i class="bi bi-shield-x"></i>
+            <span id="login-error-text">Usuario o contraseña incorrectos.</span>
+          </div>
+          <div class="auth-alert auth-alert--success" id="login-success" style="display:none">
+            <i class="bi bi-check-circle"></i>
+            Sesión iniciada correctamente....
+          </div>
+
+          <!-- Campo: usuario -->
+          <div class="auth-field" id="field-usuario">
+            <label class="auth-label" for="inp-usuario">
+              <i class="bi bi-person"></i>Nombre de usuario
+            </label>
+            <input type="text" id="inp-usuario" class="auth-input"
+                   placeholder="tu_usuario" autocomplete="username"/>
+            <span class="auth-err" id="err-usuario"></span>
+          </div>
+
+          <!-- Campo: contraseña -->
+          <div class="auth-field" id="field-pass">
+            <label class="auth-label" for="inp-pass">
+              <i class="bi bi-lock"></i>Contraseña
+            </label>
+            <div class="auth-input-wrap auth-input-wrap--icon">
+              <input type="password" id="inp-pass" class="auth-input"
+                     placeholder="••••••••" autocomplete="current-password"/>
+              <button type="button" class="auth-eye" id="toggle-pass" tabindex="-1">
+                <i class="bi bi-eye" id="eye-pass"></i>
+              </button>
+            </div>
+            <span class="auth-err" id="err-pass"></span>
+          </div>
+
+          <button class="auth-btn auth-btn--primary w-100 mt-2" id="btn-login">
+            <i class="bi bi-arrow-right-circle me-2"></i>Iniciar Sesión
+          </button>
+
+          <div class="auth-divider"><span>¿No tienes cuenta?</span></div>
+          <a href="registro.html" class="auth-btn auth-btn--ghost w-100 text-center">
+            <i class="bi bi-person-plus me-2"></i>Crear cuenta nueva
+          </a>
+        </div>
+
+        <p class="auth-legal">
+          <i class="bi bi-cloud-check me-1"></i>
+          Tus datos se almacenan de forma segura en la nube.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { iniciarSesion, obtenerSesion } from './supabase.js';
+
+    /* Redirigir si ya hay sesión activa */
+    if (obtenerSesion()) window.location.replace('index.html');
+
+    /* Toggle contraseña */
+    document.getElementById('toggle-pass').addEventListener('click', () => {
+      const inp = document.getElementById('inp-pass');
+      const ico = document.getElementById('eye-pass');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      ico.className = inp.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
+
+    /* Limpiar errores al escribir */
+    ['usuario', 'pass'].forEach(id => {
+      document.getElementById('inp-' + id).addEventListener('input', () => {
+        document.getElementById('err-' + id).textContent = '';
+        document.getElementById('field-' + id).classList.remove('auth-field--error');
+        document.getElementById('login-error').style.display = 'none';
+      });
+    });
+
+    function setErr(id, msg) {
+      document.getElementById('err-' + id).textContent = msg;
+      document.getElementById('field-' + id).classList.add('auth-field--error');
+    }
+
+    /* Login */
+    async function doLogin() {
+      const usuario = document.getElementById('inp-usuario').value.trim();
+      const pass    = document.getElementById('inp-pass').value;
+      let ok = true;
+
+      if (!usuario) { setErr('usuario', 'El nombre de usuario es obligatorio.'); ok = false; }
+      if (!pass)    { setErr('pass',    'La contraseña es obligatoria.'); ok = false; }
+      if (!ok) return;
+
+      const btn = document.getElementById('btn-login');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Verificando...';
+
+      try {
+        await iniciarSesion({ usuario, contrasena: pass });
+        document.getElementById('login-success').style.display = 'flex';
+        document.getElementById('login-error').style.display   = 'none';
+        setTimeout(() => window.location.href = 'index.html', 900);
+      } catch (err) {
+        document.getElementById('login-error-text').textContent = err.message || 'Error al iniciar sesión.';
+        document.getElementById('login-error').style.display   = 'flex';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-right-circle me-2"></i>Iniciar Sesión';
+      }
+    }
+
+    document.getElementById('btn-login').addEventListener('click', doLogin);
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  </script>
+</body>
+</html>

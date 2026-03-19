@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FINOVA — Crear Cuenta</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="auth.css"/>
+</head>
+<body class="auth-body">
+
+  <div class="auth-split auth-split--register">
+
+    <!-- Panel izquierdo -->
+    <div class="auth-panel-left d-none d-lg-flex">
+      <div class="panel-left-inner">
+        <div class="panel-brand">
+          <span class="brand-mark">FNV</span>
+          <span class="brand-name">FINOVA</span>
+        </div>
+        <h2 class="panel-headline">Tu plataforma<br>financiera personal.</h2>
+        <p class="panel-sub">Crea tu cuenta y empieza a tomar el control de tu dinero hoy mismo.</p>
+        <ul class="panel-features">
+          <li><i class="bi bi-check-circle-fill"></i>Resumen financiero en tiempo real</li>
+          <li><i class="bi bi-check-circle-fill"></i>Clasificación automática de gastos</li>
+          <li><i class="bi bi-check-circle-fill"></i>Explorador de Inversiones</li>
+          <li><i class="bi bi-check-circle-fill"></i>Análisis inteligente de hábitos</li>
+          <li><i class="bi bi-check-circle-fill"></i>Datos sincronizados en la nube</li>
+        </ul>
+      </div>
+      <div class="panel-grid-overlay"></div>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="auth-panel-right auth-panel-right--scroll">
+      <div class="auth-form-wrap">
+
+        <div class="auth-mobile-brand d-flex d-lg-none">
+          <span class="brand-mark brand-mark--sm">FNV</span>
+          <span class="brand-name brand-name--dark">FINOVA</span>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <h1 class="auth-title">Crear cuenta</h1>
+            <p class="auth-subtitle">Completa todos los campos para registrarte</p>
+          </div>
+
+          <!-- Alertas -->
+          <div class="auth-alert auth-alert--error" id="reg-error" style="display:none">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span id="reg-error-text">Corrige los errores antes de continuar.</span>
+          </div>
+          <div class="auth-alert auth-alert--success" id="reg-success" style="display:none">
+            <i class="bi bi-check-circle"></i>
+            Cuenta creada correctamente....
+          </div>
+
+          <!-- Indicador de pasos -->
+          <div class="reg-steps mb-4">
+            <div class="reg-step reg-step--active" id="dot-1"><span>1</span><small>Datos personales</small></div>
+            <div class="reg-step-line"></div>
+            <div class="reg-step" id="dot-2"><span>2</span><small>Acceso</small></div>
+          </div>
+
+          <!-- Paso 1: Datos personales -->
+          <div id="step-1">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="auth-field" id="field-nombre">
+                  <label class="auth-label" for="inp-nombre">
+                    <i class="bi bi-person"></i>Nombre(s) <span class="req"></span>
+                  </label>
+                  <input type="text" id="inp-nombre" class="auth-input" placeholder="Juan"/>
+                  <span class="auth-err" id="err-nombre"></span>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="auth-field" id="field-apellidos">
+                  <label class="auth-label" for="inp-apellidos">
+                    <i class="bi bi-person"></i>Apellidos <span class="req"></span>
+                  </label>
+                  <input type="text" id="inp-apellidos" class="auth-input" placeholder="García López"/>
+                  <span class="auth-err" id="err-apellidos"></span>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="auth-field" id="field-correo">
+                  <label class="auth-label" for="inp-correo">
+                    <i class="bi bi-envelope"></i>Correo electrónico <span class="req"></span>
+                  </label>
+                  <input type="email" id="inp-correo" class="auth-input"
+                         placeholder="correo@ejemplo.com" autocomplete="email"/>
+                  <span class="auth-err" id="err-correo"></span>
+                </div>
+              </div>
+            </div>
+            <button class="auth-btn auth-btn--primary w-100 mt-3" id="btn-next">
+              Continuar <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+          <!-- Paso 2: Credenciales -->
+          <div id="step-2" style="display:none">
+
+            <div class="auth-field" id="field-usuario">
+              <label class="auth-label" for="inp-usuario">
+                <i class="bi bi-at"></i>Nombre de usuario <span class="req"></span>
+              </label>
+              <div class="auth-input-wrap auth-input-wrap--icon">
+                <input type="text" id="inp-usuario" class="auth-input"
+                       placeholder="mi_usuario_123" autocomplete="username"/>
+                <span class="auth-input-status" id="user-status"></span>
+              </div>
+              <span class="auth-err" id="err-usuario"></span>
+              <span class="auth-hint">Solo letras, números y guiones bajos.</span>
+            </div>
+
+            <div class="auth-field" id="field-pass">
+              <label class="auth-label" for="inp-pass">
+                <i class="bi bi-lock"></i>Contraseña <span class="req"></span>
+              </label>
+              <div class="auth-input-wrap auth-input-wrap--icon">
+                <input type="password" id="inp-pass" class="auth-input"
+                       placeholder="••••••••" autocomplete="new-password"/>
+                <button type="button" class="auth-eye" id="toggle-pass" tabindex="-1">
+                  <i class="bi bi-eye" id="eye-pass"></i>
+                </button>
+              </div>
+              <span class="auth-err" id="err-pass"></span>
+
+              <!-- Fortaleza de contraseña -->
+              <div class="pass-strength mt-2" id="strength-wrap" style="display:none">
+                <div class="pass-strength-bar">
+                  <div class="pass-strength-fill" id="strength-fill"></div>
+                </div>
+                <span class="pass-strength-lbl" id="strength-lbl"></span>
+              </div>
+              <div class="pass-rules mt-2">
+                <span class="prule" id="r-len">   <i class="bi bi-circle"></i>Mínimo 6 caracteres</span>
+                <span class="prule" id="r-letter"><i class="bi bi-circle"></i>Al menos una letra</span>
+                <span class="prule" id="r-num">   <i class="bi bi-circle"></i>Al menos un número</span>
+              </div>
+            </div>
+
+            <div class="auth-field" id="field-pass2">
+              <label class="auth-label" for="inp-pass2">
+                <i class="bi bi-lock-fill"></i>Confirmar contraseña <span class="req"></span>
+              </label>
+              <div class="auth-input-wrap auth-input-wrap--icon">
+                <input type="password" id="inp-pass2" class="auth-input"
+                       placeholder="••••••••" autocomplete="new-password"/>
+                <button type="button" class="auth-eye" id="toggle-pass2" tabindex="-1">
+                  <i class="bi bi-eye" id="eye-pass2"></i>
+                </button>
+              </div>
+              <span class="auth-err" id="err-pass2"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button class="auth-btn auth-btn--ghost flex-shrink-0" id="btn-back">
+                <i class="bi bi-arrow-left me-1"></i>Atrás
+              </button>
+              <button class="auth-btn auth-btn--primary flex-grow-1" id="btn-register">
+                <i class="bi bi-person-check me-2"></i>Crear Cuenta
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="max-width:440px;margin:0 auto">
+          <div class="auth-divider"><span>¿Ya tienes cuenta?</span></div>
+          <a href="login.html" class="auth-btn auth-btn--ghost w-100 text-center">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+          </a>
+          <p class="auth-legal">
+            <i class="bi bi-cloud-check me-1"></i>Datos cifrados y almacenados.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { registrarUsuario, obtenerSesion, usuarioDisponible } from './supabase.js';
+
+    /* Redirigir si ya hay sesión */
+    if (obtenerSesion()) window.location.replace('index.html');
+
+    /* ── Constantes de validación ── */
+    const RE_LETRAS  = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s'-]+$/;
+    const RE_EMAIL   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const RE_USUARIO = /^[a-zA-Z0-9_]+$/;
+
+    /* ── Helpers ── */
+    function setErr(fieldId, errId, msg) {
+      const f = document.getElementById('field-' + fieldId);
+      const inp = document.getElementById('inp-' + fieldId);
+      f.classList.toggle('auth-field--error', !!msg);
+      f.classList.toggle('auth-field--ok', !msg && inp && inp.value.trim() !== '');
+      document.getElementById('err-' + errId).textContent = msg;
+    }
+
+    function setupToggle(btnId, inpId, icoId) {
+      document.getElementById(btnId).addEventListener('click', () => {
+        const inp = document.getElementById(inpId);
+        const ico = document.getElementById(icoId);
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        ico.className = inp.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+      });
+    }
+    setupToggle('toggle-pass',  'inp-pass',  'eye-pass');
+    setupToggle('toggle-pass2', 'inp-pass2', 'eye-pass2');
+
+    /* ── Fortaleza de contraseña ── */
+    document.getElementById('inp-pass').addEventListener('input', function () {
+      const v = this.value;
+      const hasLen    = v.length >= 6;
+      const hasLetter = /[a-zA-Z]/.test(v);
+      const hasNum    = /[0-9]/.test(v);
+
+      [['r-len', hasLen], ['r-letter', hasLetter], ['r-num', hasNum]].forEach(([id, ok]) => {
+        const el = document.getElementById(id);
+        el.className = 'prule ' + (ok ? 'prule--ok' : '');
+        el.querySelector('i').className = ok ? 'bi bi-check-circle-fill' : 'bi bi-circle';
+      });
+
+      const wrap = document.getElementById('strength-wrap');
+      if (!v) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'flex';
+      const score = [hasLen, hasLetter, hasNum, v.length >= 10, /[^a-zA-Z0-9]/.test(v)].filter(Boolean).length;
+      const lvls  = [
+        { w:'20%', bg:'#DC2626', t:'Muy débil'  },
+        { w:'40%', bg:'#EA580C', t:'Débil'       },
+        { w:'60%', bg:'#D97706', t:'Aceptable'   },
+        { w:'80%', bg:'#16A34A', t:'Fuerte'      },
+        { w:'100%',bg:'#047857', t:'Muy fuerte'  },
+      ];
+      const l = lvls[Math.min(score - 1, 4)] || lvls[0];
+      Object.assign(document.getElementById('strength-fill').style, { width: l.w, background: l.bg });
+      const lbl = document.getElementById('strength-lbl');
+      lbl.textContent = l.t; lbl.style.color = l.bg;
+    });
+
+    /* ── Verificar disponibilidad de usuario ── */
+    let userTimer = null;
+    document.getElementById('inp-usuario').addEventListener('input', function () {
+      const v = this.value.trim();
+      const icon = document.getElementById('user-status');
+      clearTimeout(userTimer);
+      if (!v) { icon.innerHTML = ''; return; }
+      if (!RE_USUARIO.test(v)) {
+        icon.innerHTML = '<i class="bi bi-x-circle-fill" style="color:#DC2626"></i>';
+        return;
+      }
+      icon.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:.85rem;height:.85rem;border-width:2px;color:#64748B"></span>';
+      userTimer = setTimeout(async () => {
+        const libre = await usuarioDisponible(v);
+        icon.innerHTML = libre
+          ? '<i class="bi bi-check-circle-fill" style="color:#1F7A63"></i>'
+          : '<i class="bi bi-x-circle-fill" style="color:#DC2626"></i>';
+        setErr('usuario', 'usuario', libre ? '' : 'Este nombre de usuario ya está en uso.');
+      }, 600);
+    });
+
+    /* ── Paso 1: validar datos personales ── */
+    document.getElementById('btn-next').addEventListener('click', () => {
+      const nombre    = document.getElementById('inp-nombre').value.trim();
+      const apellidos = document.getElementById('inp-apellidos').value.trim();
+      const correo    = document.getElementById('inp-correo').value.trim();
+      let ok = true;
+
+      if (!nombre)                        { setErr('nombre',    'nombre',    'El nombre es obligatorio.');                           ok = false; }
+      else if (!RE_LETRAS.test(nombre))   { setErr('nombre',    'nombre',    'El nombre no debe contener números.');                  ok = false; }
+      else                                { setErr('nombre',    'nombre',    ''); }
+
+      if (!apellidos)                       { setErr('apellidos', 'apellidos', 'Los apellidos son obligatorios.');                      ok = false; }
+      else if (!RE_LETRAS.test(apellidos))  { setErr('apellidos', 'apellidos', 'Los apellidos no deben contener números.');             ok = false; }
+      else                                  { setErr('apellidos', 'apellidos', ''); }
+
+      if (!correo)                        { setErr('correo',    'correo',    'El correo es obligatorio.');                            ok = false; }
+      else if (!RE_EMAIL.test(correo))    { setErr('correo',    'correo',    'Formato inválido (ej: usuario@email.com).');             ok = false; }
+      else                                { setErr('correo',    'correo',    ''); }
+
+      if (!ok) { document.getElementById('reg-error').style.display = 'flex'; return; }
+      document.getElementById('reg-error').style.display = 'none';
+
+      document.getElementById('step-1').style.display = 'none';
+      document.getElementById('step-2').style.display = 'block';
+      document.getElementById('dot-1').classList.remove('reg-step--active');
+      document.getElementById('dot-1').classList.add('reg-step--done');
+      document.getElementById('dot-2').classList.add('reg-step--active');
+    });
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+      document.getElementById('step-2').style.display = 'none';
+      document.getElementById('step-1').style.display = 'block';
+      document.getElementById('dot-2').classList.remove('reg-step--active');
+      document.getElementById('dot-1').classList.remove('reg-step--done');
+      document.getElementById('dot-1').classList.add('reg-step--active');
+    });
+
+    /* ── Paso 2: registrar ── */
+    document.getElementById('btn-register').addEventListener('click', async () => {
+      const usuario = document.getElementById('inp-usuario').value.trim();
+      const pass    = document.getElementById('inp-pass').value;
+      const pass2   = document.getElementById('inp-pass2').value;
+      let ok = true;
+
+      if (!usuario)                       { setErr('usuario', 'usuario', 'El nombre de usuario es obligatorio.');      ok = false; }
+      else if (!RE_USUARIO.test(usuario)) { setErr('usuario', 'usuario', 'Solo letras, números y guiones bajos.');     ok = false; }
+      else                                { setErr('usuario', 'usuario', ''); }
+
+      if (!pass)                          { setErr('pass',  'pass',  'La contraseña es obligatoria.');                 ok = false; }
+      else if (pass.length < 6)           { setErr('pass',  'pass',  'Mínimo 6 caracteres.');                          ok = false; }
+      else if (!/[a-zA-Z]/.test(pass))    { setErr('pass',  'pass',  'Debe contener al menos una letra.');             ok = false; }
+      else if (!/[0-9]/.test(pass))       { setErr('pass',  'pass',  'Debe contener al menos un número.');             ok = false; }
+      else                                { setErr('pass',  'pass',  ''); }
+
+      if (!pass2)                         { setErr('pass2', 'pass2', 'Confirma tu contraseña.');                       ok = false; }
+      else if (pass !== pass2)            { setErr('pass2', 'pass2', 'Las contraseñas no coinciden.');                 ok = false; }
+      else                                { setErr('pass2', 'pass2', ''); }
+
+      if (!ok) { document.getElementById('reg-error').style.display = 'flex'; return; }
+      document.getElementById('reg-error').style.display = 'none';
+
+      const btn = document.getElementById('btn-register');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Creando cuenta...';
+
+      try {
+        const nombre    = document.getElementById('inp-nombre').value.trim();
+        const apellidos = document.getElementById('inp-apellidos').value.trim();
+        const correo    = document.getElementById('inp-correo').value.trim();
+
+        await registrarUsuario({ nombre, apellidos, correo, usuario, contrasena: pass });
+
+        document.getElementById('reg-success').style.display = 'flex';
+        document.getElementById('btn-back').disabled = true;
+        btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Cuenta creada';
+
+        setTimeout(() => window.location.href = 'login.html', 2000);
+
+      } catch (err) {
+        let msg = err.message || 'Error al crear la cuenta. Intenta de nuevo.';
+        document.getElementById('reg-error-text').textContent = msg;
+        document.getElementById('reg-error').style.display = 'flex';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-person-check me-2"></i>Crear Cuenta';
+      }
+    });
+  </script>
+</body>
+</html>
